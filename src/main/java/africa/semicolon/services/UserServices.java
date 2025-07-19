@@ -1,11 +1,7 @@
 package africa.semicolon.services;
 
-import africa.semicolon.DTOs.requests.AddEntryRequest;
-import africa.semicolon.DTOs.requests.EditEntryRequest;
-import africa.semicolon.DTOs.requests.RegisterUserRequest;
-import africa.semicolon.DTOs.responses.AddRequestResponse;
-import africa.semicolon.DTOs.responses.EditEntryResponse;
-import africa.semicolon.DTOs.responses.RegisterUserResponse;
+import africa.semicolon.DTOs.requests.*;
+import africa.semicolon.DTOs.responses.*;
 
 public interface UserServices {
     RegisterUserResponse registerUser(RegisterUserRequest request);
@@ -13,4 +9,8 @@ public interface UserServices {
     AddRequestResponse addEntry(AddEntryRequest request);
 
     EditEntryResponse editEntry(EditEntryRequest request);
+
+    DeleteEntryResponse deleteEntry(DeleteEntryRequest request);
+
+    DeleteUserResponse deleteUser(DeleteUserRequest request);
 }

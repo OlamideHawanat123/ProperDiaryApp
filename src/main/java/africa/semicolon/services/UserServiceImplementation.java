@@ -1,11 +1,7 @@
 package africa.semicolon.services;
 
-import africa.semicolon.DTOs.requests.AddEntryRequest;
-import africa.semicolon.DTOs.requests.EditEntryRequest;
-import africa.semicolon.DTOs.requests.RegisterUserRequest;
-import africa.semicolon.DTOs.responses.AddRequestResponse;
-import africa.semicolon.DTOs.responses.EditEntryResponse;
-import africa.semicolon.DTOs.responses.RegisterUserResponse;
+import africa.semicolon.DTOs.requests.*;
+import africa.semicolon.DTOs.responses.*;
 import africa.semicolon.Exceptions.EmailAlreadyExistException;
 import africa.semicolon.Exceptions.InvalidDetailsException;
 import africa.semicolon.Exceptions.InvalidPasswordSizeException;
@@ -51,7 +47,8 @@ public class UserServiceImplementation implements UserServices {
 
     @Override
     public EditEntryResponse editEntry(EditEntryRequest request) {
-        Entry entry = entriesRepository.findByTitle(request.getOldTitle()).orElseThrow();
+        String oldTitle = request.getOldTitle().trim();
+        Entry entry = entriesRepository.findByTitleIgnoreCase(request.getOldTitle()).orElseThrow();
         entry.setTitle(request.getNewTitle());
         entry.setContent(request.getNewContent());
         entry.setDateCreated(request.getDateModified());
@@ -61,6 +58,25 @@ public class UserServiceImplementation implements UserServices {
         response.setMessage("Entry updated successfully!");
         return response;
 
+    }
+
+    @Override
+    public DeleteEntryResponse deleteEntry(DeleteEntryRequest request) {
+        Entry entry = entriesRepository.findByTitleIgnoreCase(request.getEntryTitle()).orElseThrow();
+        entriesRepository.delete(entry);
+        DeleteEntryResponse response = new DeleteEntryResponse();
+        response.setMessage("Entry deleted successfully!");
+        return response;
+
+    }
+
+    @Override
+    public DeleteUserResponse deleteUser(DeleteUserRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        userRepository.delete(user);
+        DeleteUserResponse response = new DeleteUserResponse();
+        response.setMessage("Account deleted successfully!");
+        return response;
     }
 
     private boolean confirmExistingEntry(String oldTitle){

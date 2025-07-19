@@ -1,15 +1,11 @@
 package africa.semicolon.services;
 
-import africa.semicolon.DTOs.requests.AddEntryRequest;
-import africa.semicolon.DTOs.requests.DeleteEntryRequest;
-import africa.semicolon.DTOs.requests.RegisterUserRequest;
-import africa.semicolon.DTOs.responses.AddRequestResponse;
-import africa.semicolon.DTOs.requests.EditEntryRequest;
-import africa.semicolon.DTOs.responses.EditEntryResponse;
-import africa.semicolon.DTOs.responses.RegisterUserResponse;
+import africa.semicolon.DTOs.requests.*;
+import africa.semicolon.DTOs.responses.*;
 import africa.semicolon.Exceptions.EmailAlreadyExistException;
 import africa.semicolon.Exceptions.InvalidDetailsException;
 import africa.semicolon.Exceptions.InvalidPasswordSizeException;
+import africa.semicolon.data.models.Reason;
 import africa.semicolon.data.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,7 +148,25 @@ class UserServiceImplementationTest {
         request.setEntryTitle("A new Day");
         DeleteEntryResponse response = userServices.deleteEntry(request);
         assertNotNull(response);
-        assertEquals("Entry deleted successfully", response.getMessage());
+        assertEquals("Entry deleted successfully!", response.getMessage());
 
+    }
+
+    @Test
+    public void testThatUserCanDeleteAccount(){
+        RegisterUserRequest request = new RegisterUserRequest();
+        request.setFirstName("opemipo");
+        request.setLastName("Adebayo");
+        request.setEmail("malika@gmail.com");
+        request.setPassword("opemipo");
+        userServices.registerUser(request);
+
+        DeleteUserRequest deleteUserRequest = new DeleteUserRequest();
+        deleteUserRequest.setEmail("malika@gmail.com");
+        deleteUserRequest.setPassword("opemipo");
+        deleteUserRequest.setReason(Reason.UNSATISFIED);
+        DeleteUserResponse response = userServices.deleteUser(deleteUserRequest);
+        assertNotNull(response);
+        assertEquals("Account deleted successfully!", response.getMessage());
     }
 }
