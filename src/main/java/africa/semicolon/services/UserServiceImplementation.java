@@ -1,12 +1,18 @@
 package africa.semicolon.services;
 
+import africa.semicolon.DTOs.requests.AddEntryRequest;
+import africa.semicolon.DTOs.requests.EditEntryRequest;
 import africa.semicolon.DTOs.requests.RegisterUserRequest;
+import africa.semicolon.DTOs.responses.AddRequestResponse;
+import africa.semicolon.DTOs.responses.EditEntryResponse;
 import africa.semicolon.DTOs.responses.RegisterUserResponse;
 import africa.semicolon.Exceptions.EmailAlreadyExistException;
 import africa.semicolon.Exceptions.InvalidDetailsException;
 import africa.semicolon.Exceptions.InvalidPasswordSizeException;
 import africa.semicolon.Utils.Mapper;
+import africa.semicolon.data.models.Entry;
 import africa.semicolon.data.models.User;
+import africa.semicolon.data.repositories.EntriesRepository;
 import africa.semicolon.data.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +21,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImplementation implements UserServices {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EntriesRepository entriesRepository;
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest request) {
@@ -30,6 +39,37 @@ public class UserServiceImplementation implements UserServices {
         response.setId(user.getId());
         return response;
     }
+
+    @Override
+    public AddRequestResponse addEntry(AddEntryRequest request) {
+        Entry entry = Mapper.mapDetailsToEntry(request);
+       entriesRepository.save(entry);
+       AddRequestResponse response =  new AddRequestResponse();
+       response.setMessage("Entry added successfully");
+       return response;
+    }
+
+    @Override
+    public EditEntryResponse editEntry(EditEntryRequest request) {
+        Entry entry = entriesRepository.findByTitle(request.getOldTitle()).orElseThrow();
+        entry.setTitle(request.getNewTitle());
+        entry.setContent(request.getNewContent());
+        entry.setDateCreated(request.getDateModified());
+        entriesRepository.save(entry);
+
+        EditEntryResponse response = new EditEntryResponse();
+        response.setMessage("Entry updated successfully!");
+        return response;
+
+    }
+
+    private boolean confirmExistingEntry(String oldTitle){
+        return entriesRepository.existsByTitle(oldTitle);
+    }
+
+//    private Entry getExistingEntry(String title){
+//        return entriesRepository.findByTitle(title);
+//    }
 
     private void verifyUserEmail(String email) {
         if (userRepository.existsByEmail(email)) throw new EmailAlreadyExistException("Email already exist");

@@ -1,7 +1,11 @@
 package africa.semicolon.services;
 
 import africa.semicolon.DTOs.requests.AddEntryRequest;
+import africa.semicolon.DTOs.requests.DeleteEntryRequest;
 import africa.semicolon.DTOs.requests.RegisterUserRequest;
+import africa.semicolon.DTOs.responses.AddRequestResponse;
+import africa.semicolon.DTOs.requests.EditEntryRequest;
+import africa.semicolon.DTOs.responses.EditEntryResponse;
 import africa.semicolon.DTOs.responses.RegisterUserResponse;
 import africa.semicolon.Exceptions.EmailAlreadyExistException;
 import africa.semicolon.Exceptions.InvalidDetailsException;
@@ -11,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static java.time.LocalTime.now;
+
+import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -124,8 +129,30 @@ class UserServiceImplementationTest {
         request.setContent("I went to school");
         request.setDateCreated(now());
 
-        AddRequestResponse response = userService.addEntry(request);
+        AddRequestResponse response = userServices.addEntry(request);
         assertNotNull(response);
         assertEquals("Entry added successfully", response.getMessage());
+    }
+
+    @Test
+    public void testThatEntryThatWasAddedCanBeEdited(){
+        EditEntryRequest request = new EditEntryRequest();
+        request.setOldTitle("A new Dawn");
+        request.setNewTitle("A new day");
+        request.setNewContent("I love this particular day");
+        request.setDateModified(now());
+        EditEntryResponse response = userServices.editEntry(request);
+        assertNotNull(response);
+        assertEquals("Entry updated successfully!", response.getMessage());
+    }
+
+    @Test
+    public void testThatEntryCanBeDeleted(){
+        DeleteEntryRequest request = new DeleteEntryRequest();
+        request.setEntryTitle("A new Day");
+        DeleteEntryResponse response = userServices.deleteEntry(request);
+        assertNotNull(response);
+        assertEquals("Entry deleted successfully", response.getMessage());
+
     }
 }
