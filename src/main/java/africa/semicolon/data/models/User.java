@@ -17,6 +17,7 @@ public class User {
     private String email;
     private String password;
     private String phoneNumber;
+
     @DBRef
     private List<Entry> entries;
 }

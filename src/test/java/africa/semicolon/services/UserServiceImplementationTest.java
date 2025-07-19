@@ -1,5 +1,6 @@
 package africa.semicolon.services;
 
+import africa.semicolon.DTOs.requests.AddEntryRequest;
 import africa.semicolon.DTOs.requests.RegisterUserRequest;
 import africa.semicolon.DTOs.responses.RegisterUserResponse;
 import africa.semicolon.Exceptions.EmailAlreadyExistException;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static java.time.LocalTime.now;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -113,5 +115,17 @@ class UserServiceImplementationTest {
         assertThrows(InvalidPasswordSizeException.class, ()->{
             userServices.registerUser(request);
         });
+    }
+
+    @Test
+    public void testThatAddEntryRequestAddsAnEntryToTheExistingEntry(){
+        AddEntryRequest request = new AddEntryRequest();
+        request.setTitle("A new Dawn");
+        request.setContent("I went to school");
+        request.setDateCreated(now());
+
+        AddRequestResponse response = userService.addEntry(request);
+        assertNotNull(response);
+        assertEquals("Entry added successfully", response.getMessage());
     }
 }
