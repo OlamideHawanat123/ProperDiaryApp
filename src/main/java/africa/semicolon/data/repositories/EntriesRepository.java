@@ -9,8 +9,7 @@ import java.util.Optional;
 @Repository
 public interface EntriesRepository extends MongoRepository<Entry, String> {
     boolean existsByTitle(String title);
-//    @Query("{ 'title': { $regex: ?0, $options: 'i' } }")
-//    Optional<Diary> findByTitleIgnoreCase(String title);
     Optional<Entry> findByTitleIgnoreCase(String title);
+
 
 }
